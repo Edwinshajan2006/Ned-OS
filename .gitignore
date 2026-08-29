@@ -1,0 +1,11 @@
+w# Runtime logs
+*.log
+
+# Local backups
+backups/
+
+# Nested Fastfetch repository
+/fastfetch/
+
+# Eww runtime/cache files
+.cache/

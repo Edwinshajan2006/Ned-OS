@@ -1,0 +1,145 @@
+(defpoll current_time :interval "1s"
+  "date '+%d %b · %H:%M'")
+
+(defpoll wifi_status :interval "5s"
+  "~/NED-OS/scripts/wifi-status.sh")
+
+(defpoll volume_status :interval "2s"
+  "~/NED-OS/scripts/volume-status.sh")
+
+(defpoll battery_status :interval "10s"
+  "~/NED-OS/scripts/battery-status.sh")
+
+(defpoll current_workspace :interval "1s"
+  "wmctrl -d | awk '$2==\"*\" {print $1}'")
+
+
+;; ============================================================
+;; POWER BUTTON
+;; ============================================================
+
+(defwidget power-button [class icon action]
+  (button
+    :class "power-button ${class}"
+    :onclick "bash ~/NED-OS/scripts/ned-power.sh ${action}"
+    icon))
+
+
+;; ============================================================
+;; WORKSPACE BUTTON
+;; ============================================================
+
+(defwidget workspace-button [number label]
+  (button
+    :class {current_workspace == number ? "workspace active" : "workspace"}
+    :onclick "bash ~/NED-OS/scripts/workspace.sh ${number}"
+    label))
+
+
+;; ============================================================
+;; NED-OS TOP BAR
+;; ============================================================
+
+(defwidget ned-bar []
+  (box
+    :class "ned-bar"
+    :orientation "h"
+    :space-evenly false
+
+    ;; --------------------------------------------------------
+    ;; LEFT — POWER + BRAND
+    ;; --------------------------------------------------------
+
+    (box
+      :class "left-section"
+      :halign "start"
+      :space-evenly false
+
+      (power-button
+        :class "shutdown"
+        :icon "⏻"
+        :action "shutdown")
+
+      (power-button
+        :class "reboot"
+        :icon "↻"
+        :action "reboot")
+
+      (power-button
+        :class "lock"
+        :icon "🔒"
+        :action "lock")
+
+      (label
+        :class "brand"
+        :text "N E D • O S"))
+
+
+    ;; --------------------------------------------------------
+    ;; WORKSPACES
+    ;; --------------------------------------------------------
+
+    (box
+      :class "workspace-section"
+      :halign "center"
+      :space-evenly false
+
+      (workspace-button :number "0" :label "01 DEV")
+      (workspace-button :number "1" :label "02 WEB")
+      (workspace-button :number "2" :label "03 MEDIA")
+      (workspace-button :number "3" :label "04 SYS"))
+
+
+    ;; --------------------------------------------------------
+    ;; CENTER — DATE + TIME
+    ;; --------------------------------------------------------
+
+    (box
+      :class "center-section"
+      :hexpand true
+      :halign "center"
+
+      (label
+        :class "clock"
+        :text current_time))
+
+
+    ;; --------------------------------------------------------
+    ;; RIGHT — SYSTEM STATUS
+    ;; --------------------------------------------------------
+
+    (box
+      :class "right-section"
+      :halign "end"
+      :space-evenly false
+
+      (label
+        :class "status"
+        :text wifi_status)
+
+      (label
+        :class "status"
+        :text volume_status)
+
+      (label
+        :class "status"
+        :text battery_status))))
+
+
+;; ============================================================
+;; WINDOW
+;; ============================================================
+
+(defwindow ned-bar
+  :monitor 0
+  :geometry (geometry
+    :x "0%"
+    :y "0%"
+    :width "100%"
+    :height "30px"
+    :anchor "top center")
+  :stacking "fg"
+  :exclusive false
+  :focusable true
+  :wm-ignore false
+  (ned-bar))

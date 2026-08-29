@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -u
+root_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+usage() { cat <<'EOF'
+NED-OS command line
+
+Usage: ned <command>
+
+Commands:
+  info              Show NED-OS system information via Fastfetch
+  status            Show a read-only system status snapshot
+  doctor            Check NED-OS components without changing the system
+  wallpaper [set]   Apply the bundled NED-OS wallpaper
+  wallpaper path    Print the bundled wallpaper path
+  theme             Display the active XFCE theme settings
+  power <action>    Lock, reboot, or shut down NED-OS
+  help              Show this help
+EOF
+}
+case "${1:-help}" in
+    info) exec "$root_dir/scripts/ned-info.sh" ;; status) exec "$root_dir/scripts/system-status.sh" ;; doctor) exec "$root_dir/scripts/ned-doctor.sh" ;;
+    wallpaper) shift; exec "$root_dir/scripts/ned-wallpaper.sh" "${1:-set}" ;; power) shift; exec "$root_dir/scripts/ned-power.sh" "${1:-}" ;;
+    theme)
+        command -v xfconf-query >/dev/null 2>&1 || { printf 'XFCE settings tool is unavailable.\n' >&2; exit 1; }
+        printf 'NED-OS THEME STATUS\n'
+        for key in /Net/ThemeName /Net/IconThemeName /Gtk/CursorThemeName /Gtk/FontName /Gtk/MonospaceFontName; do printf '%-16s %s\n' "${key##*/}" "$(xfconf-query -c xsettings -p "$key" 2>/dev/null || printf 'unavailable')"; done ;;
+    help|-h|--help) usage ;; *) printf 'Unknown command: %s\n\n' "$1" >&2; usage >&2; exit 2 ;;
+esac

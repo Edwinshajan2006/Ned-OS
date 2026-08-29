@@ -1,0 +1,119 @@
+* {
+  all: unset;
+}
+
+
+/* ============================================================
+   NED-OS TOP BAR
+   ============================================================ */
+
+.ned-bar {
+  background: #1c1c1c;
+  color: #f2f2f2;
+  font-family: "JetBrains Mono";
+  font-size: 11px;
+  padding: 0 14px;
+  border-bottom: 1px solid #303030;
+}
+
+
+/* ============================================================
+   LEFT SECTION
+   ============================================================ */
+
+.left-section {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+
+/* ============================================================
+   POWER BUTTONS
+   ============================================================ */
+
+.power-button {
+  color: #777777;
+  font-size: 12px;
+  padding: 0 3px;
+  margin: 0;
+  min-width: 18px;
+  min-height: 18px;
+}
+
+.power-button:hover {
+  color: #ffffff;
+}
+
+
+/* ============================================================
+   NED-OS BRAND
+   ============================================================ */
+
+.brand {
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-left: 8px;
+}
+
+
+/* ============================================================
+   WORKSPACES
+   ============================================================ */
+
+.workspace-section {
+  margin-left: 18px;
+  margin-right: 18px;
+  padding: 0;
+}
+
+.workspace {
+  color: #666666;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 0 7px;
+  margin: 0;
+}
+
+.workspace:hover {
+  color: #bdbdbd;
+}
+
+.workspace.active {
+  color: #f2f2f2;
+  font-weight: bold;
+}
+
+
+/* ============================================================
+   CENTER CLOCK
+   ============================================================ */
+
+.center-section {
+  min-width: 300px;
+}
+
+.clock {
+  color: #f2f2f2;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+
+/* ============================================================
+   RIGHT SYSTEM STATUS
+   ============================================================ */
+
+.right-section {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.status {
+  color: #bdbdbd;
+  font-size: 10px;
+  letter-spacing: 1px;
+  margin-left: 12px;
+}
+

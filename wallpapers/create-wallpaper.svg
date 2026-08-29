@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <rect width="3840" height="2160" fill="#0B0B0B"/>
+
+  <!-- subtle grid -->
+  <g stroke="#151515" stroke-width="2" opacity="0.7">
+    <path d="M0 360H3840 M0 720H3840 M0 1080H3840 M0 1440H3840 M0 1800H3840"/>
+    <path d="M640 0V2160 M1280 0V2160 M1920 0V2160 M2560 0V2160 M3200 0V2160"/>
+  </g>
+
+  <!-- red accent -->
+  <rect x="180" y="180" width="12" height="180" fill="#FF1A1A"/>
+  <rect x="180" y="180" width="180" height="12" fill="#FF1A1A"/>
+
+  <!-- branding -->
+  <text x="180" y="1040"
+        fill="#F5F5F5"
+        font-family="monospace"
+        font-size="190"
+        font-weight="bold"
+        letter-spacing="18">
+        NED
+  </text>
+
+  <text x="190" y="1160"
+        fill="#8A8A8A"
+        font-family="monospace"
+        font-size="42"
+        letter-spacing="8">
+        NED OPERATING SYSTEM
+  </text>
+
+  <!-- status -->
+  <text x="180" y="1980"
+        fill="#555555"
+        font-family="monospace"
+        font-size="30"
+        letter-spacing="5">
+        SYSTEM / MINT / NED
+  </text>
+
+  <text x="3660" y="1980"
+        text-anchor="end"
+        fill="#FF1A1A"
+        font-family="monospace"
+        font-size="30"
+        letter-spacing="5">
+        ONLINE
+  </text>
+</svg>
