@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -u
-root_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+root_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
 usage() { cat <<'EOF'
 NED-OS command line
 
@@ -13,6 +13,7 @@ Commands:
   wallpaper [set]   Apply the bundled NED-OS wallpaper
   wallpaper path    Print the bundled wallpaper path
   theme             Display the active XFCE theme settings
+  wifi              Scan and connect to a Wi-Fi network
   power <action>    Lock, reboot, or shut down NED-OS
   help              Show this help
 EOF
@@ -20,6 +21,26 @@ EOF
 case "${1:-help}" in
     info) exec "$root_dir/scripts/ned-info.sh" ;; status) exec "$root_dir/scripts/system-status.sh" ;; doctor) exec "$root_dir/scripts/ned-doctor.sh" ;;
     wallpaper) shift; exec "$root_dir/scripts/ned-wallpaper.sh" "${1:-set}" ;; power) shift; exec "$root_dir/scripts/ned-power.sh" "${1:-}" ;;
+    wifi)
+        case "${2:-scan}" in
+            scan)
+                exec "$root_dir/scripts/ned-wifi.sh"
+                ;;
+            on)
+                exec "$root_dir/scripts/ned-wifi-on.sh"
+                ;;
+            off)
+                exec "$root_dir/scripts/ned-wifi-off.sh"
+                ;;
+            status)
+                exec "$root_dir/scripts/ned-wifi-status.sh"
+                ;;
+            *)
+                printf 'Usage: ned wifi [scan|on|off|status]\\n'
+                exit 2
+                ;;
+        esac
+        ;;
     theme)
         command -v xfconf-query >/dev/null 2>&1 || { printf 'XFCE settings tool is unavailable.\n' >&2; exit 1; }
         printf 'NED-OS THEME STATUS\n'
