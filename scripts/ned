@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -u
+
 root_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
-usage() { cat <<'EOF'
+
+usage() {
+    cat <<'EOF'
 NED-OS command line
 
 Usage: ned <command>
@@ -16,12 +19,66 @@ Commands:
   wifi              Scan and connect to a Wi-Fi network
   bluetooth         Scan and control Bluetooth devices
   power <action>    Lock, reboot, or shut down NED-OS
+  shutdown          Shut down the system
+  restart           Restart the system
+  lock              Lock the current session
+  kill              Close active GUI applications
   help              Show this help
 EOF
 }
+
 case "${1:-help}" in
-    info) exec "$root_dir/scripts/ned-info.sh" ;; status) exec "$root_dir/scripts/system-status.sh" ;; doctor) exec "$root_dir/scripts/ned-doctor.sh" ;;
-    wallpaper) shift; exec "$root_dir/scripts/ned-wallpaper.sh" "${1:-set}" ;; power) shift; exec "$root_dir/scripts/ned-power.sh" "${1:-}" ;;
+    info)
+        exec "$root_dir/scripts/ned-info.sh"
+        ;;
+    status)
+        exec "$root_dir/scripts/system-status.sh"
+        ;;
+    doctor)
+        exec "$root_dir/scripts/ned-doctor.sh"
+        ;;
+    wallpaper)
+        shift
+        exec "$root_dir/scripts/ned-wallpaper.sh" "${1:-set}"
+        ;;
+    power)
+        shift
+        exec "$root_dir/scripts/ned-power.sh" "${1:-}"
+        ;;
+    shutdown)
+        systemctl poweroff
+        ;;
+    restart)
+        systemctl reboot
+        ;;
+    lock)
+        loginctl lock-session
+        ;;
+    kill)
+        echo "NED: Closing active applications..."
+
+        protected_apps="xfwm4 xfce4-panel xfdesktop xfsettingsd xfce4-terminal"
+
+        xdotool search --onlyvisible --class ".*" 2>/dev/null |
+        while read -r wid; do
+            pid=$(xdotool getwindowpid "$wid" 2>/dev/null)
+
+            [ -z "$pid" ] && continue
+            [ "$pid" = "$$" ] && continue
+
+            cmd=$(ps -p "$pid" -o comm= 2>/dev/null)
+
+            case " $protected_apps " in
+                *" $cmd "*)
+                    continue
+                    ;;
+            esac
+
+            kill "$pid" 2>/dev/null
+        done
+
+        echo "NED: Active applications closed."
+        ;;
     wifi)
         case "${2:-scan}" in
             scan)
@@ -37,7 +94,7 @@ case "${1:-help}" in
                 exec "$root_dir/scripts/ned-wifi-status.sh"
                 ;;
             *)
-                printf 'Usage: ned wifi [scan|on|off|status]\\n'
+                printf "Usage: ned wifi [scan|on|off|status]\n"
                 exit 2
                 ;;
         esac
@@ -75,14 +132,29 @@ case "${1:-help}" in
                 exec "$root_dir/scripts/ned-bluetooth.sh" help
                 ;;
             *)
-                printf 'Usage: ned bluetooth [scan|on|off|status]\n'
+                printf "Usage: ned bluetooth [scan|on|off|status|devices|pair|connect|disconnect|erase]\n"
                 exit 2
                 ;;
         esac
         ;;
     theme)
-        command -v xfconf-query >/dev/null 2>&1 || { printf 'XFCE settings tool is unavailable.\n' >&2; exit 1; }
-        printf 'NED-OS THEME STATUS\n'
-        for key in /Net/ThemeName /Net/IconThemeName /Gtk/CursorThemeName /Gtk/FontName /Gtk/MonospaceFontName; do printf '%-16s %s\n' "${key##*/}" "$(xfconf-query -c xsettings -p "$key" 2>/dev/null || printf 'unavailable')"; done ;;
-    help|-h|--help) usage ;; *) printf 'Unknown command: %s\n\n' "$1" >&2; usage >&2; exit 2 ;;
+        command -v xfconf-query >/dev/null 2>&1 || {
+            printf "XFCE settings tool is unavailable.\n" >&2
+            exit 1
+        }
+
+        printf "NED-OS THEME STATUS\n"
+
+        for key in /Net/ThemeName /Net/IconThemeName /Gtk/CursorThemeName /Gtk/FontName /Gtk/MonospaceFontName; do
+            printf "%-16s %s\n" "${key##*/}" "$(xfconf-query -c xsettings -p "$key" 2>/dev/null || printf "unavailable")"
+        done
+        ;;
+    help|-h|--help)
+        usage
+        ;;
+    *)
+        printf "Unknown command: %s\n\n" "$1" >&2
+        usage >&2
+        exit 2
+        ;;
 esac
