@@ -14,6 +14,7 @@ Commands:
   wallpaper path    Print the bundled wallpaper path
   theme             Display the active XFCE theme settings
   wifi              Scan and connect to a Wi-Fi network
+  bluetooth         Scan and control Bluetooth devices
   power <action>    Lock, reboot, or shut down NED-OS
   help              Show this help
 EOF
@@ -37,6 +38,44 @@ case "${1:-help}" in
                 ;;
             *)
                 printf 'Usage: ned wifi [scan|on|off|status]\\n'
+                exit 2
+                ;;
+        esac
+        ;;
+    bluetooth|bl)
+        case "${2:-scan}" in
+            scan)
+                exec "$root_dir/scripts/ned-bluetooth.sh" scan
+                ;;
+            on)
+                exec "$root_dir/scripts/ned-bluetooth.sh" on
+                ;;
+            off)
+                exec "$root_dir/scripts/ned-bluetooth.sh" off
+                ;;
+            status)
+                exec "$root_dir/scripts/ned-bluetooth.sh" status
+                ;;
+            devices)
+                exec "$root_dir/scripts/ned-bluetooth.sh" devices
+                ;;
+            pair)
+                exec "$root_dir/scripts/ned-bluetooth.sh" pair
+                ;;
+            connect)
+                exec "$root_dir/scripts/ned-bluetooth.sh" connect
+                ;;
+            disconnect)
+                exec "$root_dir/scripts/ned-bluetooth.sh" disconnect
+                ;;
+            erase)
+                exec "$root_dir/scripts/ned-bluetooth.sh" erase
+                ;;
+            help|-h|--help)
+                exec "$root_dir/scripts/ned-bluetooth.sh" help
+                ;;
+            *)
+                printf 'Usage: ned bluetooth [scan|on|off|status]\n'
                 exit 2
                 ;;
         esac

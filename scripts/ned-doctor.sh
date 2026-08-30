@@ -11,6 +11,29 @@ command -v plank >/dev/null 2>&1 && pass 'Plank available' || warn 'Plank is not
 pgrep -x plank >/dev/null 2>&1 && pass 'Plank running' || warn 'Plank is not running in this session'
 command -v eww >/dev/null 2>&1 && pass 'Eww available' || warn 'Eww is not installed'
 [[ -f "$root_dir/assets/wallpapers/ned-os-mountain.png" ]] && pass 'default wallpaper asset' || fail 'default wallpaper asset missing'
+
+# Bluetooth checks
+[[ -x "$root_dir/scripts/ned-bluetooth.sh" ]] && pass 'Bluetooth module executable' || fail 'Bluetooth module missing or not executable'
+
+command -v bluetoothctl >/dev/null 2>&1 && pass 'Bluetooth control available' || fail 'bluetoothctl is not installed'
+
+if command -v systemctl >/dev/null 2>&1; then
+    if systemctl is-active --quiet bluetooth 2>/dev/null; then
+        pass 'Bluetooth service active'
+    else
+        warn 'Bluetooth service is not active'
+    fi
+else
+    warn 'systemctl is not available'
+fi
+
+if command -v bluetoothctl >/dev/null 2>&1; then
+    if bluetoothctl list 2>/dev/null | grep -q '^Controller '; then
+        pass 'Bluetooth controller detected'
+    else
+        warn 'Bluetooth controller not detected'
+    fi
+fi
 autostart="${XDG_CONFIG_HOME:-$HOME/.config}/autostart/ned-os.desktop"
 [[ -f "$autostart" ]] && pass 'NED-OS autostart entry' || warn 'NED-OS autostart entry not installed'
 if command -v desktop-file-validate >/dev/null 2>&1 && [[ -f "$autostart" ]]; then desktop-file-validate "$autostart" >/dev/null 2>&1 && pass 'autostart entry syntax' || fail 'autostart entry syntax is invalid'; fi
