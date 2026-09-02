@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "NED Focus Guard",
+  "version": "1.0",
+  "description": "Prevents opening new Chrome tabs and restores closed tabs during NED Focus.",
+  "permissions": [
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

@@ -1,160 +1,118 @@
-#!/usr/bin/env bash
-set -u
+#!/bin/bash
 
-root_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)
+root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-usage() {
-    cat <<'EOF'
-NED-OS command line
+show_help() {
+    cat <<EOF
+NED-OS COMMAND CENTER
 
-Usage: ned <command>
+Usage:
+  ned <command>
 
-Commands:
-  info              Show NED-OS system information via Fastfetch
-  status            Show a read-only system status snapshot
-  doctor            Check NED-OS components without changing the system
-  wallpaper [set]   Apply the bundled NED-OS wallpaper
-  wallpaper path    Print the bundled wallpaper path
-  theme             Display the active XFCE theme settings
-  wifi              Scan and connect to a Wi-Fi network
-  bluetooth         Scan and control Bluetooth devices
+System:
+  info              Show NED-OS information
+  status            Show system status
+  doctor            Run system diagnostics
+
+Appearance:
+  wallpaper         Manage wallpaper
+  theme             Manage NED-OS theme
+
+Power:
   power <action>    Lock, reboot, or shut down NED-OS
   shutdown          Shut down the system
   restart           Restart the system
   lock              Lock the current session
   kill              Close active GUI applications
+
+Focus:
+  focus             Start NED Focus mode
+  focus stop        Stop NED Focus mode
+  focus status      Show NED Focus status
+
+Other:
   help              Show this help
 EOF
 }
 
 case "${1:-help}" in
+
     info)
         exec "$root_dir/scripts/ned-info.sh"
         ;;
+
     status)
         exec "$root_dir/scripts/system-status.sh"
         ;;
+
     doctor)
         exec "$root_dir/scripts/ned-doctor.sh"
         ;;
+
     wallpaper)
-        shift
-        exec "$root_dir/scripts/ned-wallpaper.sh" "${1:-set}"
+        exec "$root_dir/scripts/ned-wallpaper.sh" "${@:2}"
         ;;
-    power)
-        shift
-        exec "$root_dir/scripts/ned-power.sh" "${1:-}"
-        ;;
-    shutdown)
-        systemctl poweroff
-        ;;
-    restart)
-        systemctl reboot
-        ;;
-    lock)
-        loginctl lock-session
-        ;;
-    kill)
-        echo "NED: Closing active applications..."
 
-        protected_apps="xfwm4 xfce4-panel xfdesktop xfsettingsd xfce4-terminal"
-
-        xdotool search --onlyvisible --class ".*" 2>/dev/null |
-        while read -r wid; do
-            pid=$(xdotool getwindowpid "$wid" 2>/dev/null)
-
-            [ -z "$pid" ] && continue
-            [ "$pid" = "$$" ] && continue
-
-            cmd=$(ps -p "$pid" -o comm= 2>/dev/null)
-
-            case " $protected_apps " in
-                *" $cmd "*)
-                    continue
-                    ;;
-            esac
-
-            kill "$pid" 2>/dev/null
-        done
-
-        echo "NED: Active applications closed."
-        ;;
-    wifi)
-        case "${2:-scan}" in
-            scan)
-                exec "$root_dir/scripts/ned-wifi.sh"
-                ;;
-            on)
-                exec "$root_dir/scripts/ned-wifi-on.sh"
-                ;;
-            off)
-                exec "$root_dir/scripts/ned-wifi-off.sh"
-                ;;
-            status)
-                exec "$root_dir/scripts/ned-wifi-status.sh"
-                ;;
-            *)
-                printf "Usage: ned wifi [scan|on|off|status]\n"
-                exit 2
-                ;;
-        esac
-        ;;
-    bluetooth|bl)
-        case "${2:-scan}" in
-            scan)
-                exec "$root_dir/scripts/ned-bluetooth.sh" scan
-                ;;
-            on)
-                exec "$root_dir/scripts/ned-bluetooth.sh" on
-                ;;
-            off)
-                exec "$root_dir/scripts/ned-bluetooth.sh" off
-                ;;
-            status)
-                exec "$root_dir/scripts/ned-bluetooth.sh" status
-                ;;
-            devices)
-                exec "$root_dir/scripts/ned-bluetooth.sh" devices
-                ;;
-            pair)
-                exec "$root_dir/scripts/ned-bluetooth.sh" pair
-                ;;
-            connect)
-                exec "$root_dir/scripts/ned-bluetooth.sh" connect
-                ;;
-            disconnect)
-                exec "$root_dir/scripts/ned-bluetooth.sh" disconnect
-                ;;
-            erase)
-                exec "$root_dir/scripts/ned-bluetooth.sh" erase
-                ;;
-            help|-h|--help)
-                exec "$root_dir/scripts/ned-bluetooth.sh" help
-                ;;
-            *)
-                printf "Usage: ned bluetooth [scan|on|off|status|devices|pair|connect|disconnect|erase]\n"
-                exit 2
-                ;;
-        esac
-        ;;
     theme)
-        command -v xfconf-query >/dev/null 2>&1 || {
-            printf "XFCE settings tool is unavailable.\n" >&2
-            exit 1
-        }
-
-        printf "NED-OS THEME STATUS\n"
-
-        for key in /Net/ThemeName /Net/IconThemeName /Gtk/CursorThemeName /Gtk/FontName /Gtk/MonospaceFontName; do
-            printf "%-16s %s\n" "${key##*/}" "$(xfconf-query -c xsettings -p "$key" 2>/dev/null || printf "unavailable")"
-        done
+        if [ -x "$root_dir/scripts/ned-theme.sh" ]; then
+            exec "$root_dir/scripts/ned-theme.sh" "${@:2}"
+        else
+            echo "NED theme script not found."
+        fi
         ;;
-    help|-h|--help)
-        usage
+
+    power)
+        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
+            exec "$root_dir/scripts/ned-power.sh" "${@:2}"
+        else
+            echo "NED power script not found."
+        fi
         ;;
+
+    shutdown)
+        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
+            exec "$root_dir/scripts/ned-power.sh" shutdown
+        else
+            echo "NED power script not found."
+        fi
+        ;;
+
+    restart)
+        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
+            exec "$root_dir/scripts/ned-power.sh" restart
+        else
+            echo "NED power script not found."
+        fi
+        ;;
+
+    lock)
+        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
+            exec "$root_dir/scripts/ned-power.sh" lock
+        else
+            loginctl lock-session
+        fi
+        ;;
+
+    kill)
+        pkill -f "chrome" 2>/dev/null
+        pkill -f "chromium" 2>/dev/null
+        echo "Active GUI applications closed."
+        ;;
+
+    focus)
+        exec "$root_dir/scripts/ned-focus.sh" "${2:-start}"
+        ;;
+
+    help)
+        show_help
+        ;;
+
     *)
-        printf "Unknown command: %s\n\n" "$1" >&2
-        usage >&2
-        exit 2
+        echo "Unknown command: $1"
+        echo
+        show_help
+        exit 1
         ;;
+
 esac
+
