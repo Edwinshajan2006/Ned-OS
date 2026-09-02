@@ -1,9 +1,9 @@
 #!/bin/bash
 
-root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+root_dir="$HOME/NED-OS"
 
 show_help() {
-    cat <<EOF
+    cat <<HELP
 NED-OS COMMAND CENTER
 
 Usage:
@@ -32,7 +32,7 @@ Focus:
 
 Other:
   help              Show this help
-EOF
+HELP
 }
 
 case "${1:-help}" in
@@ -62,35 +62,19 @@ case "${1:-help}" in
         ;;
 
     power)
-        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
-            exec "$root_dir/scripts/ned-power.sh" "${@:2}"
-        else
-            echo "NED power script not found."
-        fi
+        exec "$root_dir/scripts/ned-power.sh" "${@:2}"
         ;;
 
     shutdown)
-        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
-            exec "$root_dir/scripts/ned-power.sh" shutdown
-        else
-            echo "NED power script not found."
-        fi
+        exec "$root_dir/scripts/ned-power.sh" shutdown
         ;;
 
     restart)
-        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
-            exec "$root_dir/scripts/ned-power.sh" restart
-        else
-            echo "NED power script not found."
-        fi
+        exec "$root_dir/scripts/ned-power.sh" restart
         ;;
 
     lock)
-        if [ -x "$root_dir/scripts/ned-power.sh" ]; then
-            exec "$root_dir/scripts/ned-power.sh" lock
-        else
-            loginctl lock-session
-        fi
+        exec "$root_dir/scripts/ned-power.sh" lock
         ;;
 
     kill)
@@ -103,7 +87,7 @@ case "${1:-help}" in
         exec "$root_dir/scripts/ned-focus.sh" "${2:-start}"
         ;;
 
-    help)
+    help|--help|-h)
         show_help
         ;;
 
@@ -115,4 +99,3 @@ case "${1:-help}" in
         ;;
 
 esac
-
