@@ -27,6 +27,13 @@ else
     echo "Eww bar already running" >> "$LOG"
 fi
 
+if ! eww -c "$HOME/NED-OS/eww" active-windows | grep -q '^ned-dock'; then
+    eww -c "$HOME/NED-OS/eww" open ned-dock >> "$LOG" 2>&1 &
+    echo "Eww dock opened" >> "$LOG"
+else
+    echo "Eww dock already running" >> "$LOG"
+fi
+
 # Conky
 if ! pgrep -f "conky.*NED-OS/conky/ned-system.conf" >/dev/null; then
     conky -c "$HOME/NED-OS/conky/ned-system.conf" >> "$LOG" 2>&1 &

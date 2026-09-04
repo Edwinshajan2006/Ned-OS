@@ -127,7 +127,60 @@
 
 
 ;; ============================================================
-;; WINDOW
+;; NED-OS BOTTOM DOCK
+;; ============================================================
+
+(defwidget dock-button [class icon label command]
+  (button
+    :class "dock-button ${class}"
+    :onclick "bash -c '${command}'"
+    (box
+      :orientation "v"
+      :halign "center"
+      :space-evenly false
+      (label :class "dock-icon" :text icon)
+      (label :class "dock-label" :text label))))
+
+(defwidget ned-dock []
+  (box
+    :class "ned-dock"
+    :orientation "h"
+    :space-evenly false
+    :halign "center"
+
+    (dock-button
+      :class "dock-files"
+      :icon "📁"
+      :label "Files"
+      :command "thunar")
+
+    (dock-button
+      :class "dock-terminal"
+      :icon "▶"
+      :label "Terminal"
+      :command "xfce4-terminal")
+
+    (dock-button
+      :class "dock-browser"
+      :icon "◎"
+      :label "Browser"
+      :command "firefox")
+
+    (dock-button
+      :class "dock-settings"
+      :icon "⚙"
+      :label "Settings"
+      :command "xfce4-settings-manager")
+
+    (dock-button
+      :class "dock-ned"
+      :icon "N"
+      :label "NED"
+      :command "rofi -show drun -theme ~/.config/rofi/ned-os.rasi")))
+
+
+;; ============================================================
+;; WINDOWS
 ;; ============================================================
 
 (defwindow ned-bar
@@ -143,3 +196,17 @@
   :focusable true
   :wm-ignore false
   (ned-bar))
+
+(defwindow ned-dock
+  :monitor 0
+  :geometry (geometry
+    :x "0%"
+    :y "100%"
+    :width "320px"
+    :height "56px"
+    :anchor "bottom center")
+  :stacking "fg"
+  :exclusive false
+  :focusable true
+  :wm-ignore false
+  (ned-dock))

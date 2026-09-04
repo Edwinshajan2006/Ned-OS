@@ -14,6 +14,11 @@ System:
   status            Show system status
   doctor            Run system diagnostics
 
+Network:
+  wifi [command]    Manage Wi-Fi (scan, on, off, status, disconnect)
+  bluetooth [cmd]   Manage Bluetooth (scan, on, off, status, devices, pair, connect, disconnect, erase)
+  bl [command]      Alias for bluetooth
+
 Appearance:
   wallpaper         Manage wallpaper
   theme             Manage NED-OS theme
@@ -54,11 +59,15 @@ case "${1:-help}" in
         ;;
 
     theme)
-        if [ -x "$root_dir/scripts/ned-theme.sh" ]; then
-            exec "$root_dir/scripts/ned-theme.sh" "${@:2}"
-        else
-            echo "NED theme script not found."
-        fi
+        exec "$root_dir/scripts/ned-theme.sh" "${@:2}"
+        ;;
+
+    wifi)
+        exec "$root_dir/scripts/ned-wifi.sh" "${@:2}"
+        ;;
+
+    bluetooth|bl)
+        exec "$root_dir/scripts/ned-bluetooth.sh" "${@:2}"
         ;;
 
     power)

@@ -117,3 +117,181 @@
   margin-left: 12px;
 }
 
+
+/* ============================================================
+   NED-OS BOTTOM DOCK
+   ============================================================ */
+
+.ned-dock {
+  background: #0B0B0B;
+  border-top: 1px solid #222222;
+  padding: 4px 16px;
+  margin: 0;
+}
+
+.dock-button {
+  color: #888888;
+  font-size: 10px;
+  padding: 2px 12px;
+  margin: 0 2px;
+  min-width: 42px;
+  min-height: 42px;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.dock-button:hover {
+  color: #ffffff;
+  background: #1A1A1A;
+}
+
+.dock-icon {
+  font-size: 18px;
+  min-height: 22px;
+}
+
+.dock-label {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  min-height: 10px;
+}
+
+
+/* ============================================================
+   NED-OS CONNECTIVITY POPUPS
+   ============================================================ */
+
+.popup-container {
+  background: #0B0B0B;
+  border-top: 1px solid #222222;
+  padding: 10px 14px;
+  font-family: "JetBrains Mono";
+}
+
+.popup-header {
+  margin-bottom: 8px;
+}
+
+.popup-title {
+  color: #f2f2f2;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.popup-close {
+  color: #555555;
+  font-size: 11px;
+  padding: 0 4px;
+  min-width: 18px;
+  min-height: 18px;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.popup-close:hover {
+  color: #ffffff;
+  background: #1A1A1A;
+}
+
+.popup-status {
+  color: #888888;
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.popup-status.error {
+  color: #FF4444;
+}
+
+.popup-actions {
+  margin-bottom: 8px;
+}
+
+.popup-btn {
+  color: #888888;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  margin-right: 6px;
+  min-height: 22px;
+  border-radius: 4px;
+  background: #1A1A1A;
+}
+
+.popup-btn:hover {
+  color: #ffffff;
+  background: #2A2A2A;
+}
+
+.popup-divider {
+  color: #222222;
+  font-size: 1px;
+  min-height: 1px;
+  margin: 4px 0;
+}
+
+.popup-section {
+  color: #555555;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+
+.popup-list {
+}
+
+.popup-empty {
+  color: #444444;
+  font-size: 9px;
+  font-style: italic;
+}
+
+.wifi-network {
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+.wifi-network:hover {
+  background: #1A1A1A;
+}
+
+.wifi-net-name {
+  color: #cccccc;
+  font-size: 10px;
+}
+
+.wifi-net-signal {
+  color: #888888;
+  font-size: 9px;
+  margin-left: 8px;
+}
+
+.wifi-net-sec {
+  color: #555555;
+  font-size: 9px;
+  margin-left: 6px;
+}
+
+.bt-device {
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+.bt-device:hover {
+  background: #1A1A1A;
+}
+
+.bt-dev-name {
+  color: #cccccc;
+  font-size: 10px;
+}
+
+.bt-dev-addr {
+  color: #555555;
+  font-size: 8px;
+  margin-left: 8px;
+}
+
