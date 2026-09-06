@@ -1,118 +1,121 @@
 #!/bin/bash
 
-PIDFILE="/tmp/ned-focus.pid"
-STARTFILE="/tmp/ned-focus-start"
-TIMERPID="/tmp/ned-focus-timer.pid"
+STATE_DIR="$HOME/.config/ned-os"
+PIDFILE="$STATE_DIR/focus.pid"
+ENDTIME="$STATE_DIR/focus-end"
+TIMERPID="$STATE_DIR/focus-timer.pid"
+
+DEFAULT_MINUTES=25
 
 start_focus() {
+    local minutes="${1:-$DEFAULT_MINUTES}"
+
+    if ! [[ "$minutes" =~ ^[0-9]+$ ]] || [ "$minutes" -le 0 ]; then
+        echo "Usage: ned focus start [minutes]"
+        exit 1
+    fi
 
     if [ -f "$PIDFILE" ]; then
         echo "NED FOCUS is already active."
         exit 1
     fi
 
-    echo $$ > "$PIDFILE"
-    date +%s > "$STARTFILE"
+    mkdir -p "$STATE_DIR"
 
-    echo
-    echo "================================"
-    echo "        NED FOCUS MODE"
-    echo "================================"
-    echo
-    echo "Focus mode started."
-    echo
-    echo "Existing Chrome tabs are protected."
-    echo "New tabs will be rejected."
-    echo "Closed tabs will be restored."
-    echo
-    echo "Stop with:"
-    echo "  ned focus stop"
-    echo
+    local duration=$((minutes * 60))
+    local end_time=$(( $(date +%s) + duration ))
+
+    echo "$end_time" > "$ENDTIME"
 
     (
+        echo $$ > "$PIDFILE"
+
         while [ -f "$PIDFILE" ]; do
-
-            START=$(cat "$STARTFILE")
             NOW=$(date +%s)
-            ELAPSED=$((NOW - START))
+            END=$(cat "$ENDTIME" 2>/dev/null)
 
-            HOURS=$((ELAPSED / 3600))
-            MINUTES=$(((ELAPSED % 3600) / 60))
-            SECONDS=$((ELAPSED % 60))
+            if [ -z "$END" ]; then
+                break
+            fi
 
-            printf "\rNED FOCUS  %02d:%02d:%02d" \
-                "$HOURS" "$MINUTES" "$SECONDS"
+            if [ "$NOW" -ge "$END" ]; then
+                rm -f "$PIDFILE" "$ENDTIME" "$TIMERPID"
+                exit 0
+            fi
 
             sleep 1
         done
-    ) &
+    ) >/dev/null 2>&1 &
 
     echo $! > "$TIMERPID"
 
-    while [ -f "$PIDFILE" ]; do
-        sleep 2
-    done
+    disown "$!" 2>/dev/null
+
+    # Give the background process a moment to register.
+    sleep 0.2
+
+    exit 0
 }
 
 stop_focus() {
-
     if [ ! -f "$PIDFILE" ]; then
         echo "NED FOCUS is not running."
         exit 0
     fi
 
-    rm -f "$PIDFILE"
-    rm -f "$STARTFILE"
+    rm -f "$PIDFILE" "$ENDTIME"
 
     if [ -f "$TIMERPID" ]; then
         kill "$(cat "$TIMERPID")" 2>/dev/null
         rm -f "$TIMERPID"
     fi
 
-    echo
     echo "NED FOCUS stopped."
 }
 
 status_focus() {
-
-    if [ -f "$PIDFILE" ]; then
-
-        START=$(cat "$STARTFILE")
-        NOW=$(date +%s)
-        ELAPSED=$((NOW - START))
-
-        HOURS=$((ELAPSED / 3600))
-        MINUTES=$(((ELAPSED % 3600) / 60))
-        SECONDS=$((ELAPSED % 60))
-
-        echo "NED FOCUS: ACTIVE"
-        printf "TIME: %02d:%02d:%02d\n" \
-            "$HOURS" "$MINUTES" "$SECONDS"
-
-    else
+    if [ ! -f "$PIDFILE" ]; then
         echo "NED FOCUS: OFF"
+        exit 0
     fi
+
+    if [ ! -f "$ENDTIME" ]; then
+        echo "NED FOCUS: ERROR — missing timer state"
+        exit 1
+    fi
+
+    NOW=$(date +%s)
+    END=$(cat "$ENDTIME")
+    REMAINING=$((END - NOW))
+
+    if [ "$REMAINING" -le 0 ]; then
+        echo "NED FOCUS: FINISHED"
+        rm -f "$PIDFILE" "$ENDTIME" "$TIMERPID"
+        exit 0
+    fi
+
+    MINUTES_LEFT=$((REMAINING / 60))
+    SECONDS_LEFT=$((REMAINING % 60))
+
+    echo "NED FOCUS: ACTIVE"
+    printf "REMAINING: %02d:%02d\n" \
+        "$MINUTES_LEFT" "$SECONDS_LEFT"
 }
 
 case "${1:-start}" in
-
     start)
-        start_focus
+        start_focus "${2:-$DEFAULT_MINUTES}"
         ;;
-
     stop)
         stop_focus
         ;;
-
     status)
         status_focus
         ;;
-
     *)
         echo "Usage:"
-        echo "  ned focus"
+        echo "  ned focus start [minutes]"
         echo "  ned focus stop"
         echo "  ned focus status"
         ;;
-
 esac
