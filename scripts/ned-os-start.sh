@@ -2,6 +2,9 @@
 
 sleep 3
 
+# Disable the unwanted XFCE panel.
+xfce4-panel -q >/dev/null 2>&1 || true
+
 LOG="$HOME/NED-OS/ned-os-start.log"
 
 echo "=== NED-OS START $(date) ===" >> "$LOG"
@@ -26,6 +29,21 @@ if ! eww -c "$HOME/NED-OS/eww" active-windows | grep -q '^ned-bar'; then
 else
     echo "Eww bar already running" >> "$LOG"
 fi
+
+# Reserve 30px at the top for the NED bar.
+# Wait until the Eww window exists, then apply the X11 strut.
+for i in {1..20}; do
+    NED_BAR_ID="$(wmctrl -l | awk '/Eww - ned-bar$/ {print $1; exit}')"
+    if [ -n "$NED_BAR_ID" ]; then
+        xprop -id "$NED_BAR_ID" \
+            -f _NET_WM_STRUT_PARTIAL 32c \
+            -set _NET_WM_STRUT_PARTIAL "0,0,30,0,0,0,0,0,0,1919,0,0" \
+            >> "$LOG" 2>&1
+        echo "NED top bar reserved 30px" >> "$LOG"
+        break
+    fi
+    sleep 0.25
+done
 
 if ! eww -c "$HOME/NED-OS/eww" active-windows | grep -q '^ned-dock'; then
     eww -c "$HOME/NED-OS/eww" open ned-dock >> "$LOG" 2>&1 &
