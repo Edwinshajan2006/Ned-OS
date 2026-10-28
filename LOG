@@ -1,0 +1,116 @@
+logger# NED-OS Development Log
+
+**Date:** 28 October 2026  
+**Project:** NED-OS  
+**Developer:** Edwin Shajan  
+**Repository:** https://github.com/Edwinshajan2006/Ned-OS
+
+## Overview
+
+NED-OS is a personal Linux customization and desktop productivity project focused on creating a personalized, efficient, and visually consistent Linux environment.
+
+The project began with Linux Mint and later transitioned to Fedora. It includes desktop customization, terminal enhancements, shell scripts, system utilities, and a custom GNOME Control Center.
+
+## Development History
+
+### 1. Linux Mint Phase
+- Started developing NED-OS using Linux Mint.
+- Customized the desktop environment, themes, icons, and wallpapers.
+- Experimented with desktop widgets, panels, and dock customization.
+- Developed scripts to simplify common system operations.
+- Started building a personalized Linux experience under the NED-OS name.
+
+### 2. Fedora Migration
+- Migrated the primary development environment from Linux Mint to Fedora Linux.
+- Continued development and customization using GNOME.
+- Configured the Fish shell and Kitty terminal.
+- Experimented with Starship prompt customization.
+- Configured Fastfetch to display NED-OS branding.
+- Continued adapting existing NED-OS components to the Fedora environment.
+
+### 3. Terminal and Shell Customization
+- Configured Fish as the primary shell.
+- Set Kitty as the default terminal emulator.
+- Customized the terminal prompt and color scheme.
+- Created a custom Fastfetch configuration featuring NED-OS branding.
+- Explored GitHub contribution information in the terminal.
+- Worked on integrating a Python script with Fastfetch to display GitHub-related information.
+
+### 4. NED-OS CLI and Utility Scripts
+The project includes a custom command-line interface designed to simplify system management.
+
+Planned and developed command categories include:
+- `ned info` - Display system or NED-OS information.
+- `ned status` - Check system status.
+- `ned doctor` - Diagnose common issues.
+- `ned wallpaper` - Manage wallpapers.
+- `ned theme` - Manage themes.
+- `ned wifi` - Access Wi-Fi controls.
+- `ned bluetooth` - Access Bluetooth controls.
+- `ned power` - Access power-management options.
+- `ned shutdown` - Shut down the system.
+- `ned restart` - Restart the system.
+- `ned lock` - Lock the session.
+- `ned help` - Display available commands.
+
+**Note:** Command availability and functionality may vary by version.
+
+### 5. NED-OS Control Center
+- Started developing a custom GNOME Shell extension named NED-OS Control Center.
+- Created extension metadata and JavaScript files.
+- Experimented with custom headers, grids, panels, and footer layouts.
+- Worked on replacing default layouts with a custom NED-OS interface.
+- Investigated duplicate-panel issues.
+- Continued refining the interface and system integration.
+
+### 6. Productivity Features
+Features explored for future development include:
+- NED Focus mode to support distraction-free work.
+- A timer displayed in the top panel.
+- Quick Wi-Fi controls.
+- Improved Bluetooth controls.
+- System status and power-management shortcuts.
+- A more consistent desktop experience across NED-OS components.
+
+## Technology Stack
+
+- **Operating system:** Fedora Linux
+- **Previous operating system:** Linux Mint
+- **Desktop environment:** GNOME
+- **Shell:** Fish
+- **Terminal:** Kitty
+- **System information:** Fastfetch
+- **Scripting:** Bash and Python
+- **Extension development:** JavaScript and GNOME Shell APIs
+- **Version control:** Git and GitHub
+
+## Development Goals
+
+1. Improve the stability of the NED-OS CLI.
+2. Refine the GNOME Control Center interface.
+3. Resolve duplicate panels and layout inconsistencies.
+4. Improve system-control integration.
+5. Develop NED Focus mode and productivity features.
+6. Improve installation, configuration, and troubleshooting scripts.
+7. Maintain documentation for installation and development.
+8. Track changes through meaningful Git commits.
+
+## Current Development Status
+
+This document establishes the NED-OS development log beginning on 28 October 2026.
+
+The project has evolved from Linux Mint desktop customization into a Fedora-based Linux environment with custom branding, shell enhancements, system utilities, and GNOME extension development.
+
+Individual features should be marked as completed only after testing and verification.
+
+## Next Steps
+
+- Review the existing repository structure.
+- Verify the current status of each component.
+- Document installation and configuration procedures.
+- Test CLI commands and GNOME extension functionality.
+- Record future changes in dated development logs.
+
+---
+
+*Maintained by Edwin Shajan as part of the NED-OS project.*
