@@ -1,6 +1,6 @@
 #!/bin/bash
 
-root_dir="$HOME/NED-OS"
+root_dir="$HOME/Code/NED-OS"
 
 show_help() {
     cat <<HELP
