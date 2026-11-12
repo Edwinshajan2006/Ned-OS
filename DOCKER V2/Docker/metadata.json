@@ -1,0 +1,8 @@
+{
+  "uuid": "radial-dock@ned",
+  "name": "Radial Dock",
+  "description": "A radial launcher/dock with sub-rings and live CPU/RAM stats. Toggle with Super+D.",
+  "shell-version": ["48", "49", "50"],
+  "settings-schema": "org.gnome.shell.extensions.radial-dock",
+  "version": 1
+}
