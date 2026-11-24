@@ -2,6 +2,12 @@
 
 <div align="center">
 
+<img src="./profile-banner.svg" width="100%" alt="NED-OS project banner" />
+
+</div>
+
+<div align="center">
+
 <img src="https://raw.githubusercontent.com/Edwinshajan2006/Ned-OS/main/assets/branding/ned-os-mark.svg" width="120" alt="NED-OS mark" />
 
 ### A personal Linux environment built around a terminal-first workflow
