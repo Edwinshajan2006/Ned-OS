@@ -11,37 +11,23 @@ function rememberTab(tab) {
 }
 
 chrome.tabs.query({}, tabs => {
-    for (const tab of tabs) {
-        rememberTab(tab);
-    }
+    for (const tab of tabs) rememberTab(tab);
 });
 
 chrome.tabs.onCreated.addListener(tab => {
-    // New tabs are not allowed.
-    // Immediately close them.
     if (tab.id !== undefined) {
-        setTimeout(() => {
-            chrome.tabs.remove(tab.id).catch(() => {});
-        }, 50);
+        setTimeout(() => chrome.tabs.remove(tab.id).catch(() => {}), 50);
     }
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === "complete") {
-        rememberTab(tab);
-    }
+    if (changeInfo.status === "complete") rememberTab(tab);
 });
 
-chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
+chrome.tabs.onRemoved.addListener(tabId => {
     const oldTab = protectedTabs.get(tabId);
-
-    if (!oldTab) {
-        return;
-    }
-
+    if (!oldTab) return;
     protectedTabs.delete(tabId);
-
-    // Recreate the tab that was closed.
     chrome.tabs.create({
         url: oldTab.url,
         index: oldTab.index,
